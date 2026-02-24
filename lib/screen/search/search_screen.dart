@@ -51,8 +51,6 @@ class SearchScreen extends StatelessWidget {
                     );
                   },
                 ),
-
-                _ => const SizedBox(),
               },
             ),
           ],

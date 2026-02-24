@@ -3,7 +3,7 @@ import 'package:flutter_restaurant_app/data/api/api_services.dart';
 // ignore: unused_import
 import 'package:flutter_restaurant_app/provider/detail/bookmark_list_provider.dart';
 // ignore: unused_import
-import 'package:flutter_restaurant_app/provider/detail/tourism_detail_provider.dart';
+import 'package:flutter_restaurant_app/provider/detail/restaurant_detail_provider.dart';
 import 'package:flutter_restaurant_app/provider/home/restaurant_list_provider.dart';
 import 'package:flutter_restaurant_app/provider/main/index_nav_provider.dart';
 // ignore: unused_import
@@ -26,10 +26,10 @@ void main() {
               RestaurantListProvider(context.read<ApiServices>()),
         ),
         // todo-04-inject-02: register the tourism detail provider
-        // ChangeNotifierProvider(
-        //   create: (context) =>
-        //       TourismDetailProvider(context.read<ApiServices>()),
-        // ),
+        ChangeNotifierProvider(
+          create: (context) =>
+              RestaurantDetailProvider(context.read<ApiServices>()),
+        ),
       ],
       child: const MyApp(),
     ),
@@ -49,9 +49,9 @@ class MyApp extends StatelessWidget {
       initialRoute: NavigationRoute.mainRoute.name,
       routes: {
         NavigationRoute.mainRoute.name: (context) => const MainScreen(),
-        // NavigationRoute.detailRoute.name: (context) => DetailScreen(
-        //   tourismId: ModalRoute.of(context)?.settings.arguments as int,
-        // ),
+        NavigationRoute.detailRoute.name: (context) => DetailScreen(
+          restaurantId: ModalRoute.of(context)?.settings.arguments as String,
+        ),
       },
     );
   }

@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 // ignore: unused_import
+import 'package:flutter/material.dart';
+import 'package:flutter_restaurant_app/data/model/add_review_response.dart';
 import 'package:flutter_restaurant_app/data/model/restaurant_model.dart';
 import 'package:flutter_restaurant_app/data/model/restaurant_list_response.dart';
 // ignore: unused_import
@@ -41,6 +43,29 @@ class ApiServices {
       return RestaurantSearchResponse.fromJson(jsonDecode(response.body));
     } else {
       throw Exception("Failed to search restaurant");
+    }
+  }
+
+  Future<AddReviewResponse> addReview({
+    required String id,
+    required String name,
+    required String review,
+  }) async {
+    final response = await http.post(
+      Uri.parse("$_baseUrl/review"),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({"id": id, "name": name, "review": review}),
+    );
+
+    print("STATUS: ${response.statusCode}");
+    print("BODY: ${response.body}");
+
+    final decoded = jsonDecode(response.body);
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return AddReviewResponse.fromJson(decoded);
+    } else {
+      throw Exception("Failed to add review");
     }
   }
 }

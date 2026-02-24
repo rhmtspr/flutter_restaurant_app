@@ -40,7 +40,8 @@ class _DetailScreenState extends State<DetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Tourism Detail"),
+        title: const Text("Restaurant Detail"),
+        centerTitle: true,
         actions: [
           ChangeNotifierProvider(
             create: (context) => BookmarkIconProvider(),

@@ -34,14 +34,11 @@ class _DetailScreenState extends State<DetailScreen> {
       body: Consumer<RestaurantDetailProvider>(
         builder: (context, value, child) {
           return switch (value.resultState) {
-            /// LOADING
             RestaurantDetailLoadingState() => const _LoadingView(),
 
-            /// SUCCESS
             RestaurantDetailLoadedState(data: var restaurant) =>
               BodyOfDetailScreenWidget(restaurantDetail: restaurant),
 
-            /// ERROR
             RestaurantDetailErrorState(error: var message) => _ErrorView(
               message: message,
               onRetry: _fetch,

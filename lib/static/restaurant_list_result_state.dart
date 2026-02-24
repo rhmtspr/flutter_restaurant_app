@@ -1,5 +1,5 @@
 // todo-01-state-01: create a sealed class to make a state
-import 'package:flutter_restaurant_app/data/model/restaurant.dart';
+import 'package:flutter_restaurant_app/data/model/restaurant_model.dart';
 
 sealed class RestaurantListResultState {}
 

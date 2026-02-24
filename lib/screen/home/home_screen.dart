@@ -50,10 +50,8 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Consumer<RestaurantListProvider>(
         builder: (context, value, child) {
           return switch (value.resultState) {
-            /// LOADING
             RestaurantListLoadingState() => const _LoadingView(),
 
-            /// SUCCESS
             RestaurantListLoadedState(data: var restaurants) =>
               RefreshIndicator(
                 onRefresh: _fetch,
@@ -104,7 +102,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
               ),
 
-            /// ERROR
             RestaurantListErrorState(error: var message) => _ErrorView(
               message: message,
               onRetry: _fetch,

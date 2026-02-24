@@ -79,7 +79,11 @@ class _BodyOfDetailScreenWidgetState extends State<BodyOfDetailScreenWidget> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    final text = Theme.of(context).textTheme;
+
     final foods = widget.restaurantDetail.menus.foods;
     final drinks = widget.restaurantDetail.menus.drinks;
 
@@ -87,94 +91,199 @@ class _BodyOfDetailScreenWidgetState extends State<BodyOfDetailScreenWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Hero(
-            tag: widget.restaurantDetail.pictureId,
-            child: Image.network(
-              "https://restaurant-api.dicoding.dev/images/large/${widget.restaurantDetail.pictureId}",
-              width: double.infinity,
-              height: 220,
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => const SizedBox(
-                height: 220,
-                child: Center(child: Icon(Icons.broken_image)),
+          /// HERO IMAGE
+          Stack(
+            children: [
+              Hero(
+                tag: widget.restaurantDetail.pictureId,
+                child: Image.network(
+                  "https://restaurant-api.dicoding.dev/images/large/${widget.restaurantDetail.pictureId}",
+                  width: double.infinity,
+                  height: 260,
+                  fit: BoxFit.cover,
+                ),
               ),
-            ),
+
+              /// Gradient overlay
+              Container(
+                height: 260,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [
+                      colors.surface.withOpacity(0.9),
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
 
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                /// TITLE + RATING
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
                       child: Text(
                         widget.restaurantDetail.name,
-                        style: Theme.of(context).textTheme.headlineSmall,
+                        style: text.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
-                    Row(
-                      children: [
-                        const Icon(Icons.star, color: Colors.orange),
-                        const SizedBox(width: 4),
-                        Text(
-                          widget.restaurantDetail.rating.toString(),
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                      ],
+
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: colors.primaryContainer,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.star_rounded,
+                            size: 16,
+                            color: colors.primary,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            widget.restaurantDetail.rating.toString(),
+                            style: text.labelMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: colors.onPrimaryContainer,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
 
-                const SizedBox(height: 8),
+                const SizedBox(height: 10),
 
+                /// ADDRESS
                 Row(
                   children: [
-                    const Icon(Icons.location_on, size: 18),
+                    Icon(
+                      Icons.location_on_outlined,
+                      size: 18,
+                      color: colors.onSurfaceVariant,
+                    ),
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
                         "${widget.restaurantDetail.city}, ${widget.restaurantDetail.address}",
-                        style: Theme.of(context).textTheme.bodyMedium,
+                        style: text.bodySmall?.copyWith(
+                          color: colors.onSurfaceVariant,
+                        ),
                       ),
                     ),
                   ],
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
 
+                /// DESCRIPTION
                 Text(
                   widget.restaurantDetail.description,
-                  style: Theme.of(context).textTheme.bodyLarge,
+                  style: text.bodyMedium?.copyWith(height: 1.6),
                 ),
 
-                const SizedBox(height: 24),
-                const SizedBox(height: 24),
-                Text(
-                  "Customer Reviews",
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+                const SizedBox(height: 28),
 
+                /// MENU SECTION
+                _SectionTitle(title: "Foods"),
                 const SizedBox(height: 12),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: foods.map((food) {
+                    return Chip(
+                      label: Text(food.name),
+                      backgroundColor: colors.surfaceVariant,
+                      side: BorderSide.none,
+                    );
+                  }).toList(),
+                ),
+
+                const SizedBox(height: 28),
+
+                _SectionTitle(title: "Drinks"),
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: drinks.map((drink) {
+                    return Chip(
+                      label: Text(drink.name),
+                      backgroundColor: colors.surfaceVariant,
+                      side: BorderSide.none,
+                    );
+                  }).toList(),
+                ),
+
+                const SizedBox(height: 32),
+
+                /// REVIEWS
+                _SectionTitle(title: "Customer Reviews"),
+                const SizedBox(height: 16),
 
                 Column(
                   children: widget.restaurantDetail.customerReviews.map((
                     review,
                   ) {
-                    return ListTile(
-                      title: Text(review.name),
-                      subtitle: Text(review.review),
-                      trailing: Text(review.date),
+                    return Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.only(bottom: 12),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: colors.surface,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: colors.outlineVariant),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            review.name,
+                            style: text.titleSmall?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(review.review, style: text.bodyMedium),
+                          const SizedBox(height: 8),
+                          Text(
+                            review.date,
+                            style: text.bodySmall?.copyWith(
+                              color: colors.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                      ),
                     );
                   }).toList(),
                 ),
-                const SizedBox(height: 24),
+
+                const SizedBox(height: 28),
+
+                _SectionTitle(title: "Write a Review"),
+                const SizedBox(height: 12),
+
                 TextField(
                   controller: nameController,
                   decoration: const InputDecoration(
-                    labelText: "Nama",
+                    hintText: "Your name",
                     border: OutlineInputBorder(),
                   ),
                 ),
@@ -185,11 +294,12 @@ class _BodyOfDetailScreenWidgetState extends State<BodyOfDetailScreenWidget> {
                   controller: reviewController,
                   maxLines: 3,
                   decoration: const InputDecoration(
-                    labelText: "Review",
+                    hintText: "Share your experience...",
                     border: OutlineInputBorder(),
                   ),
                 ),
-                const SizedBox(height: 12),
+
+                const SizedBox(height: 16),
 
                 Consumer<ReviewProvider>(
                   builder: (context, reviewProvider, _) {
@@ -199,71 +309,54 @@ class _BodyOfDetailScreenWidgetState extends State<BodyOfDetailScreenWidget> {
                       return const Center(child: CircularProgressIndicator());
                     }
 
-                    return ElevatedButton(
-                      onPressed: () async {
-                        if (nameController.text.isEmpty ||
-                            reviewController.text.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Nama dan review wajib diisi"),
-                            ),
-                          );
-                          return;
-                        }
+                    return SizedBox(
+                      width: double.infinity,
+                      child: FilledButton(
+                        onPressed: () async {
+                          if (nameController.text.isEmpty ||
+                              reviewController.text.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Nama dan review wajib diisi"),
+                              ),
+                            );
+                            return;
+                          }
 
-                        await context.read<ReviewProvider>().submitReview(
-                          id: widget.restaurantDetail.id,
-                          name: nameController.text,
-                          review: reviewController.text,
-                        );
-                      },
-                      child: const Text("Kirim Review"),
+                          await context.read<ReviewProvider>().submitReview(
+                            id: widget.restaurantDetail.id,
+                            name: nameController.text,
+                            review: reviewController.text,
+                          );
+                        },
+                        child: const Text("Submit Review"),
+                      ),
                     );
                   },
                 ),
 
-                const Divider(),
-
-                /// FOODS SECTION
-                Text("Foods", style: Theme.of(context).textTheme.titleLarge),
-                const SizedBox(height: 8),
-
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: foods
-                      .map(
-                        (food) => Chip(
-                          label: Text(food.name),
-                          avatar: const Icon(Icons.restaurant_menu, size: 18),
-                        ),
-                      )
-                      .toList(),
-                ),
-
-                const SizedBox(height: 24),
-
-                /// DRINKS SECTION
-                Text("Drinks", style: Theme.of(context).textTheme.titleLarge),
-                const SizedBox(height: 8),
-
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: drinks
-                      .map(
-                        (drink) => Chip(
-                          label: Text(drink.name),
-                          avatar: const Icon(Icons.local_drink, size: 18),
-                        ),
-                      )
-                      .toList(),
-                ),
+                const SizedBox(height: 40),
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class _SectionTitle extends StatelessWidget {
+  final String title;
+
+  const _SectionTitle({required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      title,
+      style: Theme.of(
+        context,
+      ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
     );
   }
 }

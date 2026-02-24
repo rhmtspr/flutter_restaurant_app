@@ -19,6 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    print(context.read<RestaurantListProvider>());
     // todo-02-home-13: we dont need this anymore
     // _futureTourismResponse = ApiServices().getTourismList();
     // todo-02-home-09: load the api using Provider

@@ -25,6 +25,8 @@ class RestaurantListProvider extends ChangeNotifier {
       // todo-02-home-07: second, run the api service
       final result = await _apiServices.getRestaurantList();
 
+      print("API RESULT: ${result.restaurants.length}");
+
       if (result.error) {
         _resultState = RestaurantListErrorState(result.message);
         notifyListeners();

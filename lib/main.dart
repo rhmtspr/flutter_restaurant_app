@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_restaurant_app/data/api/api_services.dart';
-// ignore: unused_import
-import 'package:flutter_restaurant_app/provider/detail/bookmark_list_provider.dart';
-// ignore: unused_import
 import 'package:flutter_restaurant_app/provider/detail/restaurant_detail_provider.dart';
 import 'package:flutter_restaurant_app/provider/detail/review_provider.dart';
 import 'package:flutter_restaurant_app/provider/home/restaurant_list_provider.dart';
 import 'package:flutter_restaurant_app/provider/search/restaurant_search_provider.dart';
-// ignore: unused_import
 import 'package:flutter_restaurant_app/screen/detail/detail_screen.dart';
 import 'package:flutter_restaurant_app/screen/main/main_screen.dart';
 import 'package:flutter_restaurant_app/static/navigation_route.dart';

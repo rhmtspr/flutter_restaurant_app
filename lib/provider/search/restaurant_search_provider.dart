@@ -23,8 +23,6 @@ class RestaurantSearchProvider extends ChangeNotifier {
 
       final result = await apiServices.searchRestaurant(query);
 
-      print("result: ${result.restaurants}");
-
       if (result.restaurants.isEmpty) {
         _state = RestaurantSearchNoneState();
       } else {

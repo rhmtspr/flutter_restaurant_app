@@ -6,7 +6,6 @@ import 'package:flutter_restaurant_app/provider/detail/bookmark_list_provider.da
 import 'package:flutter_restaurant_app/provider/detail/restaurant_detail_provider.dart';
 import 'package:flutter_restaurant_app/provider/detail/review_provider.dart';
 import 'package:flutter_restaurant_app/provider/home/restaurant_list_provider.dart';
-import 'package:flutter_restaurant_app/provider/main/index_nav_provider.dart';
 import 'package:flutter_restaurant_app/provider/search/restaurant_search_provider.dart';
 // ignore: unused_import
 import 'package:flutter_restaurant_app/screen/detail/detail_screen.dart';
@@ -19,7 +18,6 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => IndexNavProvider()),
         // ChangeNotifierProvider(create: (context) => BookmarkListProvider()),
         // todo-04-inject-01: register the tourism list provider
         Provider(create: (context) => ApiServices()),

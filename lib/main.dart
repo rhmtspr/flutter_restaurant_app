@@ -11,7 +11,7 @@ import 'package:flutter_restaurant_app/provider/search/restaurant_search_provide
 import 'package:flutter_restaurant_app/screen/detail/detail_screen.dart';
 import 'package:flutter_restaurant_app/screen/main/main_screen.dart';
 import 'package:flutter_restaurant_app/static/navigation_route.dart';
-import 'package:flutter_restaurant_app/style/theme/tourism_theme.dart';
+import 'package:flutter_restaurant_app/style/theme/restaurant_theme.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -50,8 +50,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Restaurant App',
-      theme: TourismTheme.lightTheme,
-      darkTheme: TourismTheme.darkTheme,
+      theme: RestaurantTheme.lightTheme,
+      darkTheme: RestaurantTheme.darkTheme,
       themeMode: ThemeMode.system,
       initialRoute: NavigationRoute.mainRoute.name,
       routes: {

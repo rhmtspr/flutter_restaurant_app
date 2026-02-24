@@ -6,6 +6,7 @@ import 'package:flutter_restaurant_app/provider/detail/bookmark_list_provider.da
 import 'package:flutter_restaurant_app/provider/detail/restaurant_detail_provider.dart';
 import 'package:flutter_restaurant_app/provider/home/restaurant_list_provider.dart';
 import 'package:flutter_restaurant_app/provider/main/index_nav_provider.dart';
+import 'package:flutter_restaurant_app/provider/search/restaurant_search_provider.dart';
 // ignore: unused_import
 import 'package:flutter_restaurant_app/screen/detail/detail_screen.dart';
 import 'package:flutter_restaurant_app/screen/main/main_screen.dart';
@@ -29,6 +30,10 @@ void main() {
         ChangeNotifierProvider(
           create: (context) =>
               RestaurantDetailProvider(context.read<ApiServices>()),
+        ),
+        ChangeNotifierProvider(
+          create: (context) =>
+              RestaurantSearchProvider(context.read<ApiServices>()),
         ),
       ],
       child: const MyApp(),

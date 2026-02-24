@@ -48,8 +48,9 @@ class _DetailScreenState extends State<DetailScreen> {
             child: Consumer<RestaurantDetailProvider>(
               builder: (context, value, child) {
                 return switch (value.resultState) {
-                  RestaurantDetailLoadedState(data: var tourism) =>
-                    BookmarkIconWidget(tourism: tourism),
+                  // RestaurantDetailLoadedState(data: var tourism) =>
+                  //   BookmarkIconWidget(tourism: tourism),
+                  RestaurantDetailLoadedState() => const SizedBox.shrink(),
                   _ => const SizedBox(),
                 };
               },

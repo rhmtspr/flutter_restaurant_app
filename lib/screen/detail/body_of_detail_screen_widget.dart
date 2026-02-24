@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_restaurant_app/data/model/restaurant_detail_model.dart';
 import 'package:flutter_restaurant_app/provider/detail/restaurant_detail_provider.dart';
 import 'package:flutter_restaurant_app/provider/detail/review_provider.dart';
+import 'package:flutter_restaurant_app/static/review_result_state.dart';
 import 'package:provider/provider.dart';
 
 class BodyOfDetailScreenWidget extends StatefulWidget {
@@ -15,19 +16,63 @@ class BodyOfDetailScreenWidget extends StatefulWidget {
 }
 
 class _BodyOfDetailScreenWidgetState extends State<BodyOfDetailScreenWidget> {
+  bool _handledReviewState = false;
+  late ReviewProvider _reviewProvider;
   late TextEditingController nameController;
   late TextEditingController reviewController;
 
+  void _reviewListener() async {
+    final state = _reviewProvider.state;
+
+    if (!mounted) return;
+
+    if (state is ReviewSuccessState && !_handledReviewState) {
+      _handledReviewState = true;
+
+      final messenger = ScaffoldMessenger.of(context);
+      messenger.showSnackBar(
+        const SnackBar(content: Text("Review berhasil dikirim")),
+      );
+
+      await context.read<RestaurantDetailProvider>().fetchRestaurantDetail(
+        widget.restaurantDetail.id,
+      );
+
+      if (!mounted) return;
+
+      nameController.clear();
+
+      reviewController.clear();
+
+      _reviewProvider.resetState();
+      _handledReviewState = false;
+    }
+
+    if (state is ReviewErrorState && !_handledReviewState) {
+      _handledReviewState = true;
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(state.error)));
+
+      _reviewProvider.resetState();
+      _handledReviewState = false;
+    }
+  }
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     nameController = TextEditingController();
     reviewController = TextEditingController();
+
+    _reviewProvider = context.read<ReviewProvider>();
+    _reviewProvider.addListener(_reviewListener);
   }
 
   @override
   void dispose() {
+    _reviewProvider.removeListener(_reviewListener);
     nameController.dispose();
     reviewController.dispose();
     super.dispose();
@@ -146,42 +191,37 @@ class _BodyOfDetailScreenWidgetState extends State<BodyOfDetailScreenWidget> {
                 ),
                 const SizedBox(height: 12),
 
-                ElevatedButton(
-                  onPressed: () async {
-                    if (nameController.text.isEmpty ||
-                        reviewController.text.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Nama dan review wajib diisi"),
-                        ),
-                      );
-                      return;
+                Consumer<ReviewProvider>(
+                  builder: (context, reviewProvider, _) {
+                    final state = reviewProvider.state;
+
+                    if (state is ReviewLoadingState) {
+                      return const Center(child: CircularProgressIndicator());
                     }
 
-                    final messenger = ScaffoldMessenger.of(context);
+                    return ElevatedButton(
+                      onPressed: () async {
+                        if (nameController.text.isEmpty ||
+                            reviewController.text.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Nama dan review wajib diisi"),
+                            ),
+                          );
+                          return;
+                        }
 
-                    await context.read<ReviewProvider>().submitReview(
-                      id: widget.restaurantDetail.id,
-                      name: nameController.text,
-                      review: reviewController.text,
-                      onSuccess: (_) async {
-                        await context
-                            .read<RestaurantDetailProvider>()
-                            .fetchRestaurantDetail(widget.restaurantDetail.id);
-
-                        nameController.clear();
-                        reviewController.clear();
-
-                        messenger.showSnackBar(
-                          const SnackBar(
-                            content: Text("Review berhasil dikirim"),
-                          ),
+                        await context.read<ReviewProvider>().submitReview(
+                          id: widget.restaurantDetail.id,
+                          name: nameController.text,
+                          review: reviewController.text,
                         );
                       },
+                      child: const Text("Kirim Review"),
                     );
                   },
-                  child: const Text("Kirim Review"),
                 ),
+
                 const Divider(),
 
                 /// FOODS SECTION

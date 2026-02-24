@@ -1,11 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_restaurant_app/provider/detail/bookmark_icon_provider.dart';
 import 'package:flutter_restaurant_app/provider/detail/restaurant_detail_provider.dart';
 import 'package:flutter_restaurant_app/screen/detail/body_of_detail_screen_widget.dart';
-// ignore: unused_import
-import 'package:flutter_restaurant_app/screen/detail/bookmark_icon_widget.dart';
 import 'package:flutter_restaurant_app/static/restaurant_detail_result_state.dart';
 import 'package:provider/provider.dart';
 
@@ -19,61 +14,79 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
-  // todo-03-detail-08: we dont need this anymore
-  // final Completer<Tourism> _completerTourism = Completer<Tourism>();
-  // late Future<TourismDetailResponse> _futureTourismDetail;
+  Future<void> _fetch() async {
+    await context.read<RestaurantDetailProvider>().fetchRestaurantDetail(
+      widget.restaurantId,
+    );
+  }
 
   @override
   void initState() {
     super.initState();
-
-    // todo-03-detail-05: you can change this action using provider
-    // _futureTourismDetail = ApiServices().getTourismDetail(widget.tourism.id);
-    Future.microtask(() {
-      context.read<RestaurantDetailProvider>().fetchRestaurantDetail(
-        widget.restaurantId,
-      );
-    });
+    Future.microtask(_fetch);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Restaurant Detail"),
-        centerTitle: true,
-        actions: [
-          ChangeNotifierProvider(
-            create: (context) => BookmarkIconProvider(),
-            // todo-03-detail-06: change this widget using Consumer
-            child: Consumer<RestaurantDetailProvider>(
-              builder: (context, value, child) {
-                return switch (value.resultState) {
-                  // RestaurantDetailLoadedState(data: var tourism) =>
-                  //   BookmarkIconWidget(tourism: tourism),
-                  RestaurantDetailLoadedState() => const SizedBox.shrink(),
-                  _ => const SizedBox(),
-                };
-              },
-            ),
-          ),
-        ],
-      ),
-      // todo-03-detail-07: change this widget using Consumer too
+      appBar: AppBar(title: const Text("Restaurant"), centerTitle: false),
+
       body: Consumer<RestaurantDetailProvider>(
         builder: (context, value, child) {
           return switch (value.resultState) {
-            RestaurantDetailLoadingState() => const Center(
-              child: CircularProgressIndicator(),
+            /// LOADING
+            RestaurantDetailLoadingState() => const _LoadingView(),
+
+            /// SUCCESS
+            RestaurantDetailLoadedState(data: var restaurant) =>
+              BodyOfDetailScreenWidget(restaurantDetail: restaurant),
+
+            /// ERROR
+            RestaurantDetailErrorState(error: var message) => _ErrorView(
+              message: message,
+              onRetry: _fetch,
             ),
-            RestaurantDetailLoadedState(data: var restaurantDetail) =>
-              BodyOfDetailScreenWidget(restaurantDetail: restaurantDetail),
-            RestaurantDetailErrorState(error: var message) => Center(
-              child: Text(message),
-            ),
+
             _ => const SizedBox(),
           };
         },
+      ),
+    );
+  }
+}
+
+class _LoadingView extends StatelessWidget {
+  const _LoadingView();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: CircularProgressIndicator());
+  }
+}
+
+class _ErrorView extends StatelessWidget {
+  final String message;
+  final VoidCallback onRetry;
+
+  const _ErrorView({required this.message, required this.onRetry});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.error_outline, size: 48, color: colors.error),
+            const SizedBox(height: 12),
+            Text(message, textAlign: TextAlign.center),
+            const SizedBox(height: 12),
+            FilledButton(onPressed: onRetry, child: const Text("Try again")),
+          ],
+        ),
       ),
     );
   }

@@ -30,4 +30,17 @@ class ApiServices {
       throw Exception('Failed to load tourism detail');
     }
   }
+
+  Future<RestaurantSearchResponse> searchRestaurant(String query) async {
+    final response = await http.get(Uri.parse("$_baseUrl/search?q=$query"));
+
+    final decoded = jsonDecode(response.body);
+    print("decoded: $decoded");
+
+    if (response.statusCode == 200) {
+      return RestaurantSearchResponse.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception("Failed to search restaurant");
+    }
+  }
 }

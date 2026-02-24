@@ -18,9 +18,9 @@ class RestaurantListResponse {
       error: json["error"],
       message: json["message"],
       count: json["count"],
-      restaurants: json["places"] != null
+      restaurants: json["restaurants"] != null
           ? List<Restaurant>.from(
-              json["places"]!.map((x) => Restaurant.fromJson(x)),
+              json["restaurants"]!.map((x) => Restaurant.fromJson(x)),
             )
           : <Restaurant>[],
     );

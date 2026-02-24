@@ -14,14 +14,11 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
-        // ChangeNotifierProvider(create: (context) => BookmarkListProvider()),
-        // todo-04-inject-01: register the tourism list provider
         Provider(create: (context) => ApiServices()),
         ChangeNotifierProvider(
           create: (context) =>
               RestaurantListProvider(context.read<ApiServices>()),
         ),
-        // todo-04-inject-02: register the tourism detail provider
         ChangeNotifierProvider(
           create: (context) =>
               RestaurantDetailProvider(context.read<ApiServices>()),

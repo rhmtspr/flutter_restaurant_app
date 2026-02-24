@@ -18,9 +18,11 @@ class RestaurantListResponse {
       error: json["error"],
       message: json["message"],
       count: json["count"],
-      restaurants: (json["restaurants"] as List<dynamic>)
-          .map((e) => Restaurant.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      restaurants: json["places"] != null
+          ? List<Restaurant>.from(
+              json["places"]!.map((x) => Restaurant.fromJson(x)),
+            )
+          : <Restaurant>[],
     );
   }
 }

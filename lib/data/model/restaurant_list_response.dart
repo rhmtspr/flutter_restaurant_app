@@ -1,4 +1,4 @@
-import 'package:flutter_restaurant_app/data/model/restaurant.dart';
+import 'package:flutter_restaurant_app/data/model/restaurant_model.dart';
 
 class RestaurantListResponse {
   final bool error;

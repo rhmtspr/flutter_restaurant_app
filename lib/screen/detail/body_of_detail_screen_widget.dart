@@ -16,14 +16,17 @@ class BodyOfDetailScreenWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           /// IMAGE
-          Image.network(
-            "https://restaurant-api.dicoding.dev/images/large/${restaurantDetail.pictureId}",
-            width: double.infinity,
-            height: 220,
-            fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) => const SizedBox(
+          Hero(
+            tag: restaurantDetail.pictureId,
+            child: Image.network(
+              "https://restaurant-api.dicoding.dev/images/large/${restaurantDetail.pictureId}",
+              width: double.infinity,
               height: 220,
-              child: Center(child: Icon(Icons.broken_image)),
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => const SizedBox(
+                height: 220,
+                child: Center(child: Icon(Icons.broken_image)),
+              ),
             ),
           ),
 

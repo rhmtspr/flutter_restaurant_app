@@ -1,6 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_restaurant_app/data/api/api_services.dart';
 import 'package:flutter_restaurant_app/static/restaurant_search_result_state.dart';
+import 'package:flutter_restaurant_app/data/api/api_services.dart';
 
 class RestaurantSearchProvider extends ChangeNotifier {
   final ApiServices apiServices;
@@ -10,28 +11,38 @@ class RestaurantSearchProvider extends ChangeNotifier {
   RestaurantSearchResultState _state = RestaurantSearchNoneState();
   RestaurantSearchResultState get state => _state;
 
+  Timer? _debounce;
+
   Future<void> search(String query) async {
+    // Cancel previous debounce
+    _debounce?.cancel();
+
     if (query.isEmpty) {
       _state = RestaurantSearchNoneState();
       notifyListeners();
       return;
     }
 
-    try {
-      _state = RestaurantSearchLoadingState();
-      notifyListeners();
+    // Start debounce
+    _debounce = Timer(const Duration(milliseconds: 500), () async {
+      try {
+        _state = RestaurantSearchLoadingState();
+        notifyListeners();
 
-      final result = await apiServices.searchRestaurant(query);
+        final result = await apiServices.searchRestaurant(query);
 
-      if (result.restaurants.isEmpty) {
-        _state = RestaurantSearchNoneState();
-      } else {
         _state = RestaurantSearchLoadedState(result.restaurants);
+      } catch (e) {
+        _state = RestaurantSearchErrorState(e.toString());
       }
-    } catch (e) {
-      _state = RestaurantSearchErrorState(e.toString());
-    }
 
-    notifyListeners();
+      notifyListeners();
+    });
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
   }
 }

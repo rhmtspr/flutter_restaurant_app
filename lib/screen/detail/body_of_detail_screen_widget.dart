@@ -150,13 +150,33 @@ class _BodyOfDetailScreenWidgetState extends State<BodyOfDetailScreenWidget> {
                 const SizedBox(height: 12),
 
                 ElevatedButton(
-                  onPressed: () {
-                    context.read<ReviewProvider>().submitReview(
+                  onPressed: () async {
+                    if (nameController.text.isEmpty ||
+                        reviewController.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Nama dan review wajib diisi"),
+                        ),
+                      );
+                      return;
+                    }
+
+                    await context.read<ReviewProvider>().submitReview(
                       id: widget.restaurantDetail.id,
                       name: nameController.text,
                       review: reviewController.text,
                       onSuccess: (updatedReviews) {
-                        // Refresh UI
+                        setState(() {
+                          widget.restaurantDetail.customerReviews
+                            ..clear()
+                            ..addAll(
+                              updatedReviews as Iterable<CustomerReview>,
+                            );
+                        });
+
+                        nameController.clear();
+                        reviewController.clear();
+
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text("Review berhasil dikirim"),

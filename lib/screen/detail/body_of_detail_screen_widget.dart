@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_restaurant_app/data/model/restaurant_detail_model.dart';
+import 'package:flutter_restaurant_app/provider/detail/restaurant_detail_provider.dart';
 import 'package:flutter_restaurant_app/provider/detail/review_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -41,7 +42,6 @@ class _BodyOfDetailScreenWidgetState extends State<BodyOfDetailScreenWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// IMAGE
           Hero(
             tag: widget.restaurantDetail.pictureId,
             child: Image.network(
@@ -61,7 +61,6 @@ class _BodyOfDetailScreenWidgetState extends State<BodyOfDetailScreenWidget> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                /// NAME + RATING
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -86,7 +85,6 @@ class _BodyOfDetailScreenWidgetState extends State<BodyOfDetailScreenWidget> {
 
                 const SizedBox(height: 8),
 
-                /// CITY + ADDRESS
                 Row(
                   children: [
                     const Icon(Icons.location_on, size: 18),
@@ -102,7 +100,6 @@ class _BodyOfDetailScreenWidgetState extends State<BodyOfDetailScreenWidget> {
 
                 const SizedBox(height: 16),
 
-                /// DESCRIPTION
                 Text(
                   widget.restaurantDetail.description,
                   style: Theme.of(context).textTheme.bodyLarge,
@@ -161,23 +158,21 @@ class _BodyOfDetailScreenWidgetState extends State<BodyOfDetailScreenWidget> {
                       return;
                     }
 
+                    final messenger = ScaffoldMessenger.of(context);
+
                     await context.read<ReviewProvider>().submitReview(
                       id: widget.restaurantDetail.id,
                       name: nameController.text,
                       review: reviewController.text,
-                      onSuccess: (updatedReviews) {
-                        setState(() {
-                          widget.restaurantDetail.customerReviews
-                            ..clear()
-                            ..addAll(
-                              updatedReviews as Iterable<CustomerReview>,
-                            );
-                        });
+                      onSuccess: (_) async {
+                        await context
+                            .read<RestaurantDetailProvider>()
+                            .fetchRestaurantDetail(widget.restaurantDetail.id);
 
                         nameController.clear();
                         reviewController.clear();
 
-                        ScaffoldMessenger.of(context).showSnackBar(
+                        messenger.showSnackBar(
                           const SnackBar(
                             content: Text("Review berhasil dikirim"),
                           ),

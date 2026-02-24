@@ -26,3 +26,27 @@ class Restaurant {
     );
   }
 }
+
+class RestaurantSearchResponse {
+  final bool error;
+  final int founded;
+  final List<Restaurant> restaurants;
+
+  RestaurantSearchResponse({
+    required this.error,
+    required this.founded,
+    required this.restaurants,
+  });
+
+  factory RestaurantSearchResponse.fromJson(Map<String, dynamic> json) {
+    return RestaurantSearchResponse(
+      error: json['error'] ?? false,
+      founded: json['founded'] ?? 0,
+      restaurants:
+          (json['restaurants'] as List?)
+              ?.map((e) => Restaurant.fromJson(e))
+              .toList() ??
+          [],
+    );
+  }
+}

@@ -25,6 +25,17 @@ class Restaurant {
       rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'id': id,
+      'name': name,
+      'description': description,
+      'pictureId': pictureId,
+      'city': city,
+      'rating': rating,
+    };
+  }
 }
 
 class RestaurantSearchResponse {

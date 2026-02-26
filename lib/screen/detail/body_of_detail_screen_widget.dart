@@ -4,6 +4,7 @@ import 'package:flutter_restaurant_app/provider/detail/restaurant_detail_provide
 import 'package:flutter_restaurant_app/provider/detail/review_provider.dart';
 import 'package:flutter_restaurant_app/static/review_result_state.dart';
 import 'package:provider/provider.dart';
+import 'package:readmore/readmore.dart';
 
 class BodyOfDetailScreenWidget extends StatefulWidget {
   final RestaurantDetail restaurantDetail;
@@ -193,10 +194,15 @@ class _BodyOfDetailScreenWidgetState extends State<BodyOfDetailScreenWidget> {
 
                 const SizedBox(height: 20),
 
-                /// DESCRIPTION
-                Text(
+                // DESCRIPTION
+                ReadMoreText(
                   widget.restaurantDetail.description,
-                  style: text.bodyMedium?.copyWith(height: 1.6),
+                  trimLines: 4,
+                  colorClickableText: Colors.pink,
+                  trimMode: TrimMode.Line,
+                  trimCollapsedText: 'Show more',
+                  trimExpandedText: 'Show less',
+                  moreStyle: TextStyle(fontWeight: FontWeight.bold),
                 ),
 
                 const SizedBox(height: 28),

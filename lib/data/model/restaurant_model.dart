@@ -1,3 +1,5 @@
+import 'package:flutter_restaurant_app/data/model/restaurant_detail_model.dart';
+
 class Restaurant {
   final String id;
   final String name;
@@ -35,6 +37,17 @@ class Restaurant {
       'city': city,
       'rating': rating,
     };
+  }
+
+  Restaurant toRestaurant(RestaurantDetail detail) {
+    return Restaurant(
+      id: detail.id,
+      name: detail.name,
+      description: detail.description,
+      city: detail.city,
+      pictureId: detail.pictureId,
+      rating: detail.rating,
+    );
   }
 }
 

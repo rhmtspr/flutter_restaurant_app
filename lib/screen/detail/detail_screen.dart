@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_restaurant_app/data/model/restaurant_detail_model.dart';
+import 'package:flutter_restaurant_app/data/model/restaurant_model.dart';
+import 'package:flutter_restaurant_app/provider/detail/favorite_icon_provider.dart';
 import 'package:flutter_restaurant_app/provider/detail/restaurant_detail_provider.dart';
 import 'package:flutter_restaurant_app/screen/detail/body_of_detail_screen_widget.dart';
+import 'package:flutter_restaurant_app/screen/detail/favorite_icon_widget.dart';
 import 'package:flutter_restaurant_app/static/restaurant_detail_result_state.dart';
 import 'package:provider/provider.dart';
 
@@ -14,6 +18,17 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
+  Restaurant toRestaurant(RestaurantDetail detail) {
+    return Restaurant(
+      id: detail.id,
+      name: detail.name,
+      description: detail.description,
+      city: detail.city,
+      pictureId: detail.pictureId,
+      rating: detail.rating,
+    );
+  }
+
   Future<void> _fetch() async {
     await context.read<RestaurantDetailProvider>().fetchRestaurantDetail(
       widget.restaurantId,
@@ -29,7 +44,24 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Restaurant"), centerTitle: false),
+      appBar: AppBar(
+        title: const Text("Restaurant"),
+        centerTitle: false,
+        actions: [
+          ChangeNotifierProvider(
+            create: (context) => FavoriteIconProvider(),
+            child: Consumer<RestaurantDetailProvider>(
+              builder: (context, value, child) {
+                return switch (value.resultState) {
+                  RestaurantDetailLoadedState(data: var restaurant) =>
+                    FavoriteIconWidget(restaurant: toRestaurant(restaurant)),
+                  _ => const SizedBox(),
+                };
+              },
+            ),
+          ),
+        ],
+      ),
 
       body: Consumer<RestaurantDetailProvider>(
         builder: (context, value, child) {
